@@ -1,0 +1,91 @@
+{
+  "schema": {
+    "instructions": "Arbitrate the proposed concurrent actions of four parallel worker agents in a single pass. Detect file-lock or state collisions and assign each agent's execution disposition.",
+    "questions": [
+      {
+        "id": "agent_01_disposition",
+        "type": "choice",
+        "instructions": "Execution disposition for Worker Agent 1's proposed tool call",
+        "options": [
+          {"name": "grant_lock", "description": "Safe to execute immediately in parallel"},
+          {"name": "serialize_after_peer", "description": "Queue behind a peer agent touching overlapping state"},
+          {"name": "abort_redundant", "description": "Cancel because another agent already covers this exact work"},
+          {"name": "escalate_conflict", "description": "Halt and escalate incompatible semantic edits"}
+        ]
+      },
+      {
+        "id": "agent_02_disposition",
+        "type": "choice",
+        "instructions": "Execution disposition for Worker Agent 2's proposed tool call",
+        "options": [
+          {"name": "grant_lock", "description": "Safe to execute immediately in parallel"},
+          {"name": "serialize_after_peer", "description": "Queue behind a peer agent touching overlapping state"},
+          {"name": "abort_redundant", "description": "Cancel because another agent already covers this exact work"},
+          {"name": "escalate_conflict", "description": "Halt and escalate incompatible semantic edits"}
+        ]
+      },
+      {
+        "id": "agent_03_disposition",
+        "type": "choice",
+        "instructions": "Execution disposition for Worker Agent 3's proposed tool call",
+        "options": [
+          {"name": "grant_lock", "description": "Safe to execute immediately in parallel"},
+          {"name": "serialize_after_peer", "description": "Queue behind a peer agent touching overlapping state"},
+          {"name": "abort_redundant", "description": "Cancel because another agent already covers this exact work"},
+          {"name": "escalate_conflict", "description": "Halt and escalate incompatible semantic edits"}
+        ]
+      },
+      {
+        "id": "agent_04_disposition",
+        "type": "choice",
+        "instructions": "Execution disposition for Worker Agent 4's proposed tool call",
+        "options": [
+          {"name": "grant_lock", "description": "Safe to execute immediately in parallel"},
+          {"name": "serialize_after_peer", "description": "Queue behind a peer agent touching overlapping state"},
+          {"name": "abort_redundant", "description": "Cancel because another agent already covers this exact work"},
+          {"name": "escalate_conflict", "description": "Halt and escalate incompatible semantic edits"}
+        ]
+      },
+      {
+        "id": "file_write_collision",
+        "type": "boolean",
+        "instructions": "Do two or more agents propose writing to the same file or mutating the same shared resource?"
+      },
+      {
+        "id": "shared_state_hazard",
+        "type": "choice",
+        "instructions": "Primary concurrency hazard across the four proposed agent actions",
+        "options": [
+          {"name": "none_independent", "description": "All four agents operate on disjoint files and read-only dependencies"},
+          {"name": "write_write_file_collision", "description": "Two agents modify overlapping lines or files simultaneously"},
+          {"name": "read_write_schema_drift", "description": "One agent reads an interface or schema that another agent is changing"},
+          {"name": "duplicate_subtask_work", "description": "Multiple agents are redundantly solving the same subtask"}
+        ]
+      },
+      {
+        "id": "priority_lock_holder",
+        "type": "choice",
+        "instructions": "Which worker agent should hold primary write priority in this step?",
+        "options": [
+          {"name": "agent_01", "description": "Worker Agent 1 holds primary lock priority"},
+          {"name": "agent_02", "description": "Worker Agent 2 holds primary lock priority"},
+          {"name": "agent_03", "description": "Worker Agent 3 holds primary lock priority"},
+          {"name": "agent_04", "description": "Worker Agent 4 holds primary lock priority"}
+        ]
+      },
+      {
+        "id": "rollback_severity",
+        "type": "score",
+        "instructions": "Risk of merge conflict or broken build if all four actions run uncoordinated",
+        "levels": ["none", "minor_rebase", "test_breakage", "destructive_state_corruption"]
+      }
+    ],
+    "samples": {{ default 1 .samples | toJson }}
+  },
+  "state": {
+    "agent_01": {{ default "edit pkg/decisionindex/engine.go (add PriorLogits fusion)" .agent_01 | toJson }},
+    "agent_02": {{ default "edit pkg/decisionindex/engine.go (refactor evaluateStandardBatch)" .agent_02 | toJson }},
+    "agent_03": {{ default "edit pkg/decisionindex/shortlist_test.go (add unit tests)" .agent_03 | toJson }},
+    "agent_04": {{ default "run go test ./pkg/decisionindex/..." .agent_04 | toJson }}
+  }
+}

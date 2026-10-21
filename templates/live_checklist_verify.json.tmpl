@@ -1,0 +1,89 @@
+{
+  "schema": {
+    "instructions": "Evaluate the sliding-window transcript and any attached visual keyframe against the live session checklist in a single pass.",
+    "questions": [
+      {
+        "id": "item_01_identity_verified",
+        "type": "choice",
+        "instructions": "Checklist Item 1: Caller or participant identity and account scope verified",
+        "options": [
+          {"name": "unaddressed", "description": "Not yet mentioned in the transcript window"},
+          {"name": "in_progress", "description": "Partially asked or awaiting confirmation"},
+          {"name": "completed_verified", "description": "Explicitly confirmed in transcript or visual frame"},
+          {"name": "contradicted", "description": "Conflicting identity or account detail stated"}
+        ]
+      },
+      {
+        "id": "item_02_root_symptom_logged",
+        "type": "choice",
+        "instructions": "Checklist Item 2: Primary symptom, error code, or physical condition documented",
+        "options": [
+          {"name": "unaddressed", "description": "Not yet mentioned"},
+          {"name": "in_progress", "description": "Symptom described without specifics"},
+          {"name": "completed_verified", "description": "Specific error code or visual condition captured"},
+          {"name": "contradicted", "description": "Visual frame contradicts spoken symptom description"}
+        ]
+      },
+      {
+        "id": "item_03_safety_or_policy_disclosure",
+        "type": "choice",
+        "instructions": "Checklist Item 3: Mandatory compliance or safety disclosure stated",
+        "options": [
+          {"name": "unaddressed", "description": "Disclosure not yet stated"},
+          {"name": "in_progress", "description": "Disclosure started but incomplete"},
+          {"name": "completed_verified", "description": "Full disclosure stated and acknowledged"},
+          {"name": "contradicted", "description": "Statement violates policy guidelines"}
+        ]
+      },
+      {
+        "id": "item_04_visual_evidence_captured",
+        "type": "choice",
+        "instructions": "Checklist Item 4: Required visual inspection frame or screen share verified",
+        "options": [
+          {"name": "unaddressed", "description": "No visual frame shared or discussed"},
+          {"name": "in_progress", "description": "Frame shared but target area unclear"},
+          {"name": "completed_verified", "description": "Target component or document clearly visible and verified"},
+          {"name": "contradicted", "description": "Shown item does not match the declared model or record"}
+        ]
+      },
+      {
+        "id": "item_05_remediation_agreed",
+        "type": "choice",
+        "instructions": "Checklist Item 5: Concrete remediation or next action agreed by participants",
+        "options": [
+          {"name": "unaddressed", "description": "Next steps not yet discussed"},
+          {"name": "in_progress", "description": "Options proposed without agreement"},
+          {"name": "completed_verified", "description": "Owner and action explicitly agreed"},
+          {"name": "contradicted", "description": "Participants expressed conflicting understandings of next steps"}
+        ]
+      },
+      {
+        "id": "item_06_followup_window_set",
+        "type": "choice",
+        "instructions": "Checklist Item 6: Target completion timestamp or follow-up window confirmed",
+        "options": [
+          {"name": "unaddressed", "description": "No timeline mentioned"},
+          {"name": "in_progress", "description": "Approximate timeframe mentioned without confirmation"},
+          {"name": "completed_verified", "description": "Concrete date or SLA window confirmed"},
+          {"name": "contradicted", "description": "Stated timeline conflicts with service SLA"}
+        ]
+      },
+      {
+        "id": "speaker_commitment_present",
+        "type": "boolean",
+        "instructions": "Did any participant make a new concrete action commitment in the current transcript window?"
+      },
+      {
+        "id": "interrupt_urgency",
+        "type": "score",
+        "instructions": "Should the assistant surface an inline prompt right now or stay silent?",
+        "levels": ["stay_silent", "passive_badge_update", "surface_gentle_reminder", "immediate_compliance_alert"]
+      }
+    ],
+    "samples": {{ default 1 .samples | toJson }}
+  },
+  "state": {
+    "window_id": {{ default "win_004" .window_id | toJson }},
+    "transcript_window": {{ default "Agent: I can see the serial label on your camera feed now. Let's schedule the replacement dispatch for Tuesday morning." .transcript_window | toJson }}
+  }
+}

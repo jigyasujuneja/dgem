@@ -1,0 +1,48 @@
+{
+  "schema": {
+    "instructions": "Look at the attached UI screenshot with candidate interactive elements marked [A] through [F]. Select the single best next-hop mark for the user goal, verify its readiness state, and flag any navigation loop or blocking modal.",
+    "questions": [
+      {
+        "id": "next_target_mark",
+        "type": "choice",
+        "instructions": "Which Set-of-Marks candidate [A-F] advances the user goal by one step?",
+        "options": [
+          {"name": "mark_a", "description": {{ default "Mark [A] candidate element" .mark_a | toJson }}},
+          {"name": "mark_b", "description": {{ default "Mark [B] candidate element" .mark_b | toJson }}},
+          {"name": "mark_c", "description": {{ default "Mark [C] candidate element" .mark_c | toJson }}},
+          {"name": "mark_d", "description": {{ default "Mark [D] candidate element" .mark_d | toJson }}},
+          {"name": "mark_e", "description": {{ default "Mark [E] candidate element" .mark_e | toJson }}},
+          {"name": "mark_f", "description": {{ default "Mark [F] candidate element" .mark_f | toJson }}},
+          {"name": "none_visible", "description": "None of the marked elements [A-F] advance the goal on this screen"}
+        ]
+      },
+      {
+        "id": "element_state",
+        "type": "choice",
+        "instructions": "Interactive readiness state of the selected target mark",
+        "options": [
+          {"name": "enabled_ready", "description": "Visible, enabled, and ready for click or text input"},
+          {"name": "disabled_greyed", "description": "Present on screen but disabled or greyed out"},
+          {"name": "obscured_by_overlay", "description": "Covered by a modal dialog, cookie banner, or dropdown menu"},
+          {"name": "requires_scroll", "description": "Partially clipped at viewport boundary"}
+        ]
+      },
+      {
+        "id": "loop_or_error_detected",
+        "type": "boolean",
+        "instructions": "Does the screen show an error banner, validation failure, or repeated state indicating a navigation loop?"
+      },
+      {
+        "id": "goal_progress_score",
+        "type": "score",
+        "instructions": "Estimated proximity of the current screen to completing the user goal",
+        "levels": ["blocked_or_wrong_page", "initial_navigation", "form_or_parameter_entry", "final_confirmation_ready"]
+      }
+    ],
+    "samples": {{ default 1 .samples | toJson }}
+  },
+  "state": {
+    "user_goal": {{ default "Navigate to the billing settings page and export the latest invoice" .user_goal | toJson }},
+    "previous_action": {{ default "Clicked Account Settings in the top navigation bar" .previous_action | toJson }}
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "schema": {
+    "instructions": "Compare Candidate Record A and Candidate Record B (along with any attached side-by-side product or document images) to resolve whether they represent the exact same underlying entity, a sibling variant, or distinct items.",
+    "questions": [
+      {
+        "id": "visual_evidence_cue",
+        "type": "choice",
+        "instructions": "Primary visual or structured attribute cue governing the comparison between Record A and Record B",
+        "options": [
+          {"name": "identical_sku_and_packaging", "description": "Brand, model/formulation, and net quantity/pack count match across both records"},
+          {"name": "multipack_or_size_delta", "description": "Same base product, but unit count, volume, or weight differs (e.g. 1-pack vs 6-pack)"},
+          {"name": "flavor_color_or_revision_delta", "description": "Same brand line, but distinct flavor, scent, colourway, or hardware revision"},
+          {"name": "suspicious_badge_or_font_anomaly", "description": "Packaging layout mimics the brand but exhibits counterfeit typography or missing regulatory marks"},
+          {"name": "unrelated_entities", "description": "Different products, brands, or categories"}
+        ]
+      },
+      {
+        "id": "entity_relation",
+        "type": "choice",
+        "instructions": "Canonical entity-resolution relationship between Record A and Record B",
+        "options": [
+          {"name": "exact_duplicate", "description": "Identical canonical entity and sellable unit; safe to merge"},
+          {"name": "sibling_variant", "description": "Belongs to the same parent product family, but distinct variant or pack size"},
+          {"name": "counterfeit_or_spoof", "description": "Look-alike or spoofed listing that must be quarantined"},
+          {"name": "distinct_entity", "description": "Separate, unrelated catalog entities"}
+        ]
+      },
+      {
+        "id": "pack_quantity_match",
+        "type": "boolean",
+        "instructions": "Do Record A and Record B specify the exact same unit count and net weight/volume?"
+      },
+      {
+        "id": "merge_action",
+        "type": "choice",
+        "instructions": "Recommended catalog graph action",
+        "options": [
+          {"name": "auto_merge_canonical", "description": "Merge Record B into Record A's canonical entity node"},
+          {"name": "link_as_variant_sibling", "description": "Keep separate SKU nodes linked under a shared parent family"},
+          {"name": "quarantine_for_trust_review", "description": "Hold listing for counterfeit or policy inspection"},
+          {"name": "keep_separate", "description": "Do not merge or link"}
+        ]
+      }
+    ],
+    "samples": {{ default 1 .samples | toJson }}
+  },
+  "state": {
+    "record_a": {{ default "Brand X Gentle Skin Cleanser, 500ml Pump Bottle (Single Unit)" .record_a | toJson }},
+    "record_b": {{ default "Brand X Gentle Cleanser 500 mL - Pack of 2 Bottles" .record_b | toJson }}
+  }
+}
